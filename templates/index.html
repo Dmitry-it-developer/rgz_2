@@ -1,150 +1,10 @@
 {% extends "base.html" %}
 
 {% block js %}
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        
-        const apiUrl = "/json-rpc-api/";
-
-        
-        async function fetchFurnitureData() {
-            const payload = {
-                jsonrpc: "2.0",
-                method: "list",
-                id: 1
-            };
-
-            const response = await fetch(apiUrl, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(payload)
-            });
-
-            const data = await response.json();
-
-            populateTable(data.result);
-        }
-
-        function populateTable(furniture) {
-            const tableBody = document.getElementById("furniture-table-body");
-            tableBody.innerHTML = "";
-
-            furniture.forEach(item => {
-                const row = document.createElement("tr");
-
-                const nameCell = document.createElement("td");
-                nameCell.textContent = item.name;
-
-                const descriptionCell = document.createElement("td");
-                descriptionCell.textContent = item.description;
-
-                const priceCell = document.createElement("td");
-                priceCell.textContent = `${item.price} руб.`;
-
-                row.appendChild(nameCell);
-                row.appendChild(descriptionCell);
-                row.appendChild(priceCell);
-
-                tableBody.appendChild(row);
-            });
-        }
-        fetchFurnitureData();
-    });
-    function showLogin() {
-        const authBlock = document.getElementById("auth-content");
-        authBlock.innerHTML = `
-            <h2>Вход</h2>
-            <form id="login-form" onsubmit="submitLogin(event)">
-                <label for="login-username">Логин:</label>
-                <input type="text" id="login-username" name="username" ><br>
-                <label for="login-password">Пароль:</label>
-                <input type="password" id="login-password" name="password" ><br>
-                <div id="login-error" class="auth-error"></div>
-                <button type="submit" class="auth-button">Войти</button>
-                <button type="button" class="auth-button secondary" onclick="resetAuthBlock()">Отмена</button>
-            </form>
-        `;
-    }
-
-    function showRegister() {
-        const authBlock = document.getElementById("auth-content");
-        authBlock.innerHTML = `
-            <h2>Регистрация</h2>
-            <form id="register-form" onsubmit="submitRegister(event)">
-                <label for="register-username">Логин:</label>
-                <input type="text" id="register-username" name="username" ><br>
-                <label for="register-password">Пароль:</label>
-                <input type="password" id="register-password" name="password" ><br>
-                <div id="register-error" class="auth-error"></div>
-                <button type="submit" class="auth-button">Зарегистрироваться</button>
-                <button type="button" class="auth-button secondary" onclick="resetAuthBlock()">Отмена</button>
-            </form>
-        `;
-    }
-
-    function resetAuthBlock() {
-        const authBlock = document.getElementById("auth-content");
-        authBlock.innerHTML = `
-            <button class="auth-button" onclick="showLogin()">Вход</button>
-            <button class="auth-button" onclick="showRegister()">Регистрация</button>
-        `;
-    }
-
-    async function submitLogin(event) {
-        event.preventDefault();
-        const username = document.getElementById("login-username").value;
-        const password = document.getElementById("login-password").value;
-
-        const response = await fetch("/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password })
-        });
-
-        const data = await response.json();
-        if (data.error) {
-            document.getElementById("login-error").innerText = data.error.message || "Ошибка входа.";
-        } else {
-            location.reload(); 
-        }
-    }
-
-    async function submitRegister(event) {
-        event.preventDefault();
-        const username = document.getElementById("register-username").value;
-        const password = document.getElementById("register-password").value;
-
-        const response = await fetch("/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password })
-        });
-
-        const data = await response.json();
-        if (data.error) {
-            document.getElementById("register-error").innerText = data.error.message || "Ошибка регистрации.";
-        } else {
-            location.reload(); 
-        }
-    }
-    async function logout() {
-        const response = await fetch("/logout", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-        });
-
-        const data = await response.json();
-        if (data.message) {
-            location.reload();
-        }
-    }
-</script>
+<script src="{{ url_for('static', filename='main.js') }}"></script>
 {% endblock %}
 
 {% block main %}
-<h1 style="text-align: center;">Каталог мебели</h1>
 <div class="auth-block" id="auth-block">
     <div id="auth-content">
         {% if login %}
@@ -156,13 +16,17 @@
         {% endif %}
     </div>
 </div>
-<div style="display: flex; justify-content: center; margin-top: 20px; width: 50%;">
+<h1 style="text-align: center;">Каталог мебели</h1>
+<div style="display: flex; justify-content: center; margin-top: 20px; width: 60%;">
     <table border="1" cellpadding="10" style="border-collapse: collapse; width: 100%; text-align: center;">
         <thead>
             <tr style="background-color: #f0f0f0;">
                 <th>Название</th>
                 <th>Описание</th>
                 <th>Цена</th>
+                {% if login %}
+                <th>Корзина</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody id="furniture-table-body">
@@ -170,4 +34,27 @@
         </tbody>
     </table>
 </div>
+{% if login %}
+<div id="cart-block" class="cart-block">
+    <h2>Корзина</h2>
+    <table class="cart-table">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Цена</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody id="cart-content">
+            <tr>
+                <td colspan="3">Ваша корзина пуста.</td>
+            </tr>
+        </tbody>
+    </table>
+    <div id="cart-total" class="cart-total">
+        <strong>Итого:</strong> <span id="cart-total-price">0 руб.</span>
+    </div>
+    <button id="pay-button" class="auth-button" onclick="payCart()" disabled>Оплатить</button>
+</div>
+{% endif %}
 {% endblock %}
