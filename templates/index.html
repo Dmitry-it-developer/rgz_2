@@ -1,6 +1,74 @@
 {% extends "base.html" %}
 
-
 {% block main %}
-       <h1>Привет</h1>
+<h1 style="text-align: center;">Каталог мебели</h1>
+<div style="display: flex; justify-content: center; margin-top: 20px; width: 50%;">
+    <table border="1" cellpadding="10" style="border-collapse: collapse; width: 100%; text-align: center;">
+        <thead>
+            <tr style="background-color: #f0f0f0;">
+                <th>Название</th>
+                <th>Описание</th>
+                <th>Цена</th>
+            </tr>
+        </thead>
+        <tbody id="furniture-table-body">
+            
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        
+        const apiUrl = "/json-rpc-api/";
+
+        
+        async function fetchFurnitureData() {
+            const payload = {
+                jsonrpc: "2.0",
+                method: "list",
+                id: 1
+            };
+
+            const response = await fetch(apiUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+            });
+
+            const data = await response.json();
+
+            populateTable(data.result);
+        }
+
+        function populateTable(furniture) {
+            const tableBody = document.getElementById("furniture-table-body");
+            tableBody.innerHTML = "";
+
+            furniture.forEach(item => {
+                const row = document.createElement("tr");
+
+                const nameCell = document.createElement("td");
+                nameCell.textContent = item.name;
+
+                const descriptionCell = document.createElement("td");
+                descriptionCell.textContent = item.description;
+
+                const priceCell = document.createElement("td");
+                priceCell.textContent = `${item.price} руб.`;
+
+                row.appendChild(nameCell);
+                row.appendChild(descriptionCell);
+                row.appendChild(priceCell);
+
+                tableBody.appendChild(row);
+            });
+        }
+        fetchFurnitureData();
+    });
+</script>
 {% endblock %}

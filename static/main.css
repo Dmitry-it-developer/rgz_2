@@ -1,0 +1,86 @@
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f5e6;
+    color: #5c5042; 
+}
+
+header {
+    background-color: #7a5c44; 
+    color: #fff;
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+footer {
+    background-color: #7a5c44;
+    color: #fff;
+    padding: 10px 20px;
+    text-align: center;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+.main_div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 160px); 
+    padding: 20px;
+}
+
+
+h1, h2 {
+    color: #5c5042; 
+}
+
+table {
+    width: 90%; /* Сделали таблицу шире */
+    margin: 0 auto;
+    border-collapse: collapse;
+    font-size: 1rem;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    text-align: center; /* Центрируем текст */
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: center; /* Центрируем текст */
+}
+
+th {
+    background-color: #d4c1a6;
+    color: #5c5042;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+tbody tr {
+    border-bottom: 1px solid #e2e2e2;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+    background-color: #f1f1f1;
+    cursor: default;
+}
+
+a {
+    text-decoration: none;
+    color: #7a5c44;
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: #6c5342;
+}
