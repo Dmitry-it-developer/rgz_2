@@ -39,7 +39,7 @@ h1, h2 {
 }
 
 table {
-    width: 90%; /* Сделали таблицу шире */
+    width: 90%; 
     margin: 0 auto;
     border-collapse: collapse;
     font-size: 1rem;
@@ -47,12 +47,12 @@ table {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     overflow: hidden;
-    text-align: center; /* Центрируем текст */
+    text-align: center; 
 }
 
 th, td {
     padding: 12px 15px;
-    text-align: center; /* Центрируем текст */
+    text-align: center; 
 }
 
 th {
@@ -83,4 +83,64 @@ a {
 
 a:hover {
     color: #6c5342;
+}
+
+.auth-block {
+    text-align: center;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f8f5e6;
+    border: 2px solid #d4c1a6;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    width: 300px;
+}
+
+.auth-button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #7a5c44;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.auth-button.secondary {
+    background-color: #d4c1a6;
+    color: #5c5042;
+}
+
+.auth-button:hover {
+    background-color: #5c5042;
+    color: #fff;
+}
+
+form {
+    margin-top: 20px;
+}
+
+form label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+    color: #5c5042;
+}
+
+form input {
+    width: 90%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #d4c1a6;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.auth-error {
+    color: #d9534f; 
+    font-size: 0.9rem;
+    margin: 10px 0;
 }

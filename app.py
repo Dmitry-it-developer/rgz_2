@@ -1,9 +1,10 @@
 from flask import Flask, url_for, redirect, render_template, jsonify, request, make_response, session, current_app
+from werkzeug.security import check_password_hash, generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
 import os
 from os import path
 from db import db
-from db.models import db, furniture
+from db.models import db, furniture, users
 
 app = Flask(__name__)
 
@@ -68,7 +69,9 @@ with app.app_context():
 @app.route("/")
 @app.route('/index')
 def index():
-    return  render_template('index.html')
+    if not 'login' in dict(session).keys():
+        return  render_template('index.html')
+    return render_template('index.html', login=session['login'])
 
 @app.route('/json-rpc-api/', methods=['POST'])
 def json_rpc_api():
@@ -102,3 +105,47 @@ def json_rpc_api():
             },
         'id': request_id
     })
+
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+
+    if not username or not password:
+        return jsonify({'error': {'message': 'Логин и пароль обязательны'}}), 400
+
+    existing_user = users.query.filter_by(login=username).first()
+    if existing_user:
+        return jsonify({'error': {'message': 'Логин уже используется'}}), 400
+
+    hashed_password = generate_password_hash(password)
+    new_user = users(login=username, password=hashed_password)
+    db.session.add(new_user)
+    db.session.commit()
+
+    session['login'] = username
+    return jsonify({'message': 'Регистрация успешна'})
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+
+    if not username or not password:
+        return jsonify({'error': {'message': 'Логин и пароль обязательны'}}), 400
+
+    user = users.query.filter_by(login=username).first()
+    if not user or not check_password_hash(user.password, password):
+        return jsonify({'error': {'message': 'Неверный логин или пароль'}}), 400
+
+    session['login'] = username
+    return jsonify({'message': 'Вход выполнен успешно'})
+
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.pop('login', None)
+    return jsonify({'message': 'Выход выполнен успешно'})
