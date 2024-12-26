@@ -147,7 +147,7 @@ function showRegister() {
             <label for="register-password">Пароль:</label>
             <input type="password" id="register-password" name="password" ><br>
             <div id="register-error" class="auth-error"></div>
-            <button type="submit" class="auth-button">Зарегистрироваться</button>
+            <button type="submit" id="register-button" class="auth-button">Зарегистрироваться</button>
             <button type="button" class="auth-button secondary" onclick="resetAuthBlock()">Отмена</button>
         </form>
     `;

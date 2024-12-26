@@ -308,3 +308,7 @@ form input {
     background-color: #d4c1a6;
     cursor: not-allowed;
 }
+
+#register-button {
+    width: auto;
+}

@@ -149,3 +149,30 @@ def login():
 def logout():
     session.pop('login', None)
     return jsonify({'message': 'Выход выполнен успешно'})
+
+@app.errorhandler(404)
+def not_found(err):
+    path = url_for('static', filename='404-error.jpg')
+    return '''<!doctype html> 
+        <html>
+            <head>
+            <style>
+            body {
+                background-color: black;
+                font-weight: bold;
+                color: red
+            }
+            h1 {
+                margin-left: 45%
+            }
+            </style>
+            </head>
+           <body>
+               <h1>Ошибка 404</h1>
+               <img src='''f"""{path}>
+            </body>
+        </html>""", 400
+
+@app.errorhandler(500)
+def server_err(err):
+    return 'Ошибка сервера! Сервер временно не отвечает'
